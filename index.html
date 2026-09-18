@@ -2,38 +2,129 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="사주, 타로, 나BTI를 한곳에서 즐기는 PLAYZIP">
-<meta name="theme-color" content="#eee9ff">
+<meta name="theme-color" content="#8b6bd8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="PLAYZIP">
 <title>PLAYZIP | 오늘은 뭐 해볼까요?</title>
 <style>
-:root{--ink:#292348;--muted:#746d91;--purple:#6d58d9;--pink:#ed69ae}
+:root{--purple:#7a5bd7;--pink:#ed75a8}
 *{box-sizing:border-box}
 html{background:#f4f0ff}
-body{margin:0;font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(circle at 50% 0,#fff 0,#f5f0ff 48%,#eee9fb 100%)}
-main{width:min(100%,1122px);margin:auto;padding:0 0 44px}
-.hero{display:block;width:100%;height:auto}
-.links{width:min(920px,calc(100% - 32px));margin:22px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.link{display:flex;align-items:center;justify-content:space-between;min-height:74px;padding:17px 20px;border:1px solid rgba(109,88,217,.16);border-radius:20px;background:rgba(255,255,255,.88);box-shadow:0 10px 30px rgba(72,53,140,.10);color:var(--ink);text-decoration:none;font-weight:850;font-size:18px;transition:.2s ease}
-.link:hover{transform:translateY(-3px);box-shadow:0 15px 36px rgba(72,53,140,.17)}
-.link:focus-visible{outline:4px solid var(--purple);outline-offset:3px}
-.link span{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;color:white;background:linear-gradient(135deg,var(--purple),var(--pink))}
-.note{text-align:center;margin:24px 20px 0;color:var(--muted);font-size:13px;line-height:1.7}
-footer{text-align:center;margin-top:28px;color:#aaa1bd;font-size:12px}
-@media(max-width:680px){.links{grid-template-columns:1fr;margin-top:16px}.link{min-height:64px;font-size:17px}main{padding-bottom:30px}}
-@media(prefers-reduced-motion:reduce){.link{transition:none}}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#fff 0,#f5f0ff 50%,#eee9fb 100%);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+.wrap{width:min(100%,1122px);margin:auto;padding:0}
+.stage{position:relative;width:100%;line-height:0;overflow:hidden}
+.main-image{display:block;width:100%;height:auto}
+.hit{position:absolute;z-index:5;display:block;border:0;background:transparent;cursor:pointer;border-radius:24px;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.hit:hover{box-shadow:0 0 0 4px rgba(122,91,215,.22) inset}
+.hit:focus-visible{outline:4px solid rgba(122,91,215,.72);outline-offset:-4px}
+.saju{left:3.4%;top:28%;width:30%;height:39.1%}
+.tarot{left:35.2%;top:28%;width:30%;height:39.1%}
+.mbti{left:67%;top:28%;width:29.6%;height:39.1%}
+.install{left:35%;top:84.1%;width:48.5%;height:6.5%;appearance:none;-webkit-appearance:none}
+.sr{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.modal{position:fixed;inset:0;z-index:9999;display:none;align-items:flex-end;justify-content:center;padding:14px max(14px,env(safe-area-inset-right)) calc(14px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));background:rgba(25,20,38,.52);line-height:1.6}
+.modal.open{display:flex}
+.sheet{width:min(520px,100%);padding:21px 19px 18px;border-radius:24px;background:#fff;color:#342d49;box-shadow:0 -16px 45px rgba(28,20,48,.2)}
+.sheet h2{margin:0 0 8px;font-size:20px}.sheet p{margin:0;color:#71687c;font-size:14px}
+.steps{margin-top:13px;padding:14px;border-radius:16px;background:#f7f3ff;color:#51475e;font-size:14px;line-height:1.85}
+.browser-open{display:none;width:100%;margin-top:13px;padding:13px;border-radius:14px;border:0;background:linear-gradient(135deg,#8164d8,#ed75a8);color:#fff;text-align:center;text-decoration:none;font-weight:800}
+.close{width:100%;margin-top:13px;padding:12px;border-radius:14px;border:1px solid #e8e1f2;background:#fff;color:#342d49;font-weight:800;cursor:pointer}
+@media(max-width:640px){.hit{border-radius:12px}}
+@media(min-width:1123px){.stage{border-radius:0 0 26px 26px;box-shadow:0 16px 46px rgba(72,53,140,.09)}}
 </style>
 </head>
 <body>
-<main>
-<img class="hero" src="playzip-home.webp" alt="PLAYZIP 소개: 사주, 타로, 나BTI 중 오늘 즐길 콘텐츠를 고르는 화면" width="1122" height="1402">
-<nav class="links" aria-label="PLAYZIP 콘텐츠 바로가기">
-<a class="link" href="https://jeiskwon.github.io/mochi-saju/">사주 시작하기 <span aria-hidden="true">→</span></a>
-<a class="link" href="https://jeiskwon.github.io/tech-asset/tistory-wrapper.html">타로 시작하기 <span aria-hidden="true">→</span></a>
-<a class="link" href="https://jeiskwon.github.io/nabti/tistory-wrapper.html">나BTI 시작하기 <span aria-hidden="true">→</span></a>
-</nav>
-<p class="note">PLAYZIP의 운세와 테스트는 재미와 자기 탐색을 위한 참고용입니다.<br>중요한 결정은 객관적인 정보와 전문가의 조언을 함께 확인해 주세요.</p>
-<footer>© 2026 PLAYZIP</footer>
+<main class="wrap">
+<div class="stage">
+<img class="main-image" src="playzip-home.webp" width="1122" height="1402" alt="PLAYZIP - 사주, 타로, 나BTI를 골라 즐기는 콘텐츠 허브">
+<a class="hit saju" href="https://jeiskwon.github.io/mochi-saju/" aria-label="모찌 사주 시작하기"><span class="sr">모찌 사주 시작하기</span></a>
+<a class="hit tarot" href="https://jeiskwon.github.io/tech-asset/tistory-wrapper.html" aria-label="오늘의 타로 시작하기"><span class="sr">오늘의 타로 시작하기</span></a>
+<a class="hit mbti" href="https://jeiskwon.github.io/nabti/tistory-wrapper.html" aria-label="나BTI 시작하기"><span class="sr">나BTI 시작하기</span></a>
+<button class="hit install" type="button" aria-label="PLAYZIP을 휴대폰 홈 화면에 추가하는 방법 보기"><span class="sr">홈 화면에 PLAYZIP 추가하기</span></button>
+</div>
 </main>
+<div id="install-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="install-title">
+<div class="sheet">
+<h2 id="install-title">홈 화면에 PLAYZIP 추가하기</h2>
+<p id="install-desc"></p>
+<div id="install-steps" class="steps"></div>
+<a id="browser-open" class="browser-open" href="#">Chrome에서 PLAYZIP 열기</a>
+<button class="close" type="button">닫기</button>
+</div>
+</div>
+<script>
+(function(){
+  var deferredPrompt=null;
+  var modal=document.getElementById('install-modal');
+  var title=document.getElementById('install-title');
+  var desc=document.getElementById('install-desc');
+  var steps=document.getElementById('install-steps');
+  var browserOpen=document.getElementById('browser-open');
+  var installButton=document.querySelector('.install');
+  var closeButton=document.querySelector('.close');
+
+  function device(){
+    var ua=navigator.userAgent||'';
+    return {iOS:/iPhone|iPad|iPod/i.test(ua),android:/Android/i.test(ua),kakao:/KAKAOTALK/i.test(ua),mobile:/Android|iPhone|iPad|iPod/i.test(ua)};
+  }
+  function openModal(){
+    var d=device();
+    browserOpen.style.display='none';
+    browserOpen.removeAttribute('target');
+    if(!d.mobile)return;
+    if(window.matchMedia('(display-mode: standalone)').matches||navigator.standalone){
+      title.textContent='이미 홈 화면에서 실행 중입니다';
+      desc.textContent='PLAYZIP이 홈 화면 앱처럼 열려 있습니다.';
+      steps.textContent='바로 사주, 타로, 나BTI를 선택해 즐겨보세요.';
+    }else if(d.kakao&&d.android){
+      title.textContent='Chrome에서 PLAYZIP을 열어주세요';
+      desc.textContent='카카오톡 안에서는 홈 화면 추가를 직접 실행할 수 없습니다.';
+      steps.innerHTML='아래 버튼으로 Chrome을 연 뒤, 오른쪽 위 <b>⋮ 메뉴 → 홈 화면에 추가</b>를 선택하세요.';
+      browserOpen.href='intent://jeiskwon.github.io/playzip/#Intent;scheme=https;package=com.android.chrome;end';
+      browserOpen.style.display='block';
+    }else if(d.kakao&&d.iOS){
+      title.textContent='Safari에서 PLAYZIP을 열어주세요';
+      desc.textContent='카카오톡 안에서는 iPhone 홈 화면 추가 메뉴를 사용할 수 없습니다.';
+      steps.innerHTML='1. 카카오톡 오른쪽 위 메뉴를 누릅니다.<br>2. <b>Safari로 열기</b>를 선택합니다.<br>3. Safari의 <b>공유 버튼 □↑ → 홈 화면에 추가</b>를 누릅니다.';
+    }else if(d.iOS){
+      title.textContent='iPhone 홈 화면에 추가';
+      desc.textContent='Safari에서 아래 순서로 진행하세요.';
+      steps.innerHTML='1. Safari의 <b>공유 버튼 □↑</b>을 누릅니다.<br>2. <b>홈 화면에 추가</b>를 선택합니다.<br>3. 이름이 <b>PLAYZIP</b>인지 확인하고 <b>추가</b>를 누릅니다.';
+    }else{
+      title.textContent='Android 홈 화면에 추가';
+      desc.textContent='현재 사용 중인 브라우저 메뉴에서 추가할 수 있습니다.';
+      steps.innerHTML='Chrome: <b>⋮ 메뉴 → 홈 화면에 추가</b><br>Samsung Internet: <b>≡ 메뉴 → 현재 페이지 추가 → 홈 화면</b>';
+    }
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    closeButton.focus();
+  }
+  function closeModal(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    installButton.focus();
+  }
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;});
+  installButton.addEventListener('click',async function(){
+    var d=device();
+    if(!d.mobile)return;
+    if(deferredPrompt){
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt=null;
+    }else{openModal();}
+  });
+  closeButton.addEventListener('click',closeModal);
+  modal.addEventListener('click',function(e){if(e.target===modal)closeModal();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal.classList.contains('open'))closeModal();});
+  var d=device();
+  if(!d.mobile){installButton.style.pointerEvents='none';installButton.style.cursor='default';installButton.tabIndex=-1;}
+  if(d.mobile&&location.hash==='#install'){setTimeout(openModal,350);}
+})();
+</script>
 </body>
 </html>
