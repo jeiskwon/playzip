@@ -1,0 +1,33 @@
+name: Validate 운명코드 live preview
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "preview/**"
+      - ".github/workflows/preview-qa.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start a server with GitHub Pages repository prefix
+        run: |
+          mkdir -p /tmp/website
+          ln -s "$GITHUB_WORKSPACE" /tmp/website/playzip
+          python3 -m http.server 8977 --directory /tmp/website > /tmp/unmyeong-preview.log 2>&1 &
+          for n in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8977/playzip/preview/index.html > /dev/null; then break; fi
+            sleep 1
+          done
+      - name: Install headless browser
+        run: |
+          npm install --no-save --package-lock=false playwright@1.62.1
+          npx playwright install --with-deps chromium
+      - name: Verify original Android app features in the browser
+        run: node preview/qa_web.js
