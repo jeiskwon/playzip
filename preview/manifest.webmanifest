@@ -10,9 +10,9 @@
   "background_color": "#fffaf4",
   "icons": [
     {
-      "src": "../playzip-icon.svg",
+      "src": "./icon.webp",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/webp"
     }
   ]
 }

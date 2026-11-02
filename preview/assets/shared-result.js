@@ -10,7 +10,7 @@
  function add(tag,text,parent=card){const e=document.createElement(tag);e.textContent=String(text||'').slice(0,2500);parent.appendChild(e);return e;}
  add('small','운명코드 · 오늘의 운세 공유');
  add('h1',data.title).style.cssText='font-size:25px;line-height:1.4';
- const img=document.createElement('img');img.src=(app?'../../characters/':'../../../characters/')+data.reader+'-c.webp';img.alt={lumi:'루미',nova:'노바',jeong:'정연'}[data.reader];img.style.cssText='display:block;width:110px;height:126px;object-fit:contain;margin:18px auto';card.appendChild(img);
+ const img=document.createElement('img');img.src=(app?'characters/':'../../../characters/')+data.reader+'-c.webp';img.alt={lumi:'루미',nova:'노바',jeong:'정연'}[data.reader];img.style.cssText='display:block;width:110px;height:126px;object-fit:contain;margin:18px auto';card.appendChild(img);
 
  add('p','오늘의 운세 핵심을 먼저 확인해보세요.');const ul=add('ul','');data.lines.forEach(x=>add('li',x,ul));
  add('h3','오늘의 조언');add('p',data.action);
