@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>\n<script src="../web-bridge.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나BTI 테스트</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
+
+
+.nabti-result-frame .character{object-fit:contain!important;width:100%;height:100%;max-height:340px}.nabti-bubble img{object-fit:contain!important}.nabti-bubble{background:transparent!important;box-shadow:none!important}
+
+.nabti-season-badge{display:table;margin:0 auto 12px;padding:6px 12px;border-radius:999px;background:#f3e6d6;color:#755031;font-size:11px;font-weight:800}.nabti-season-badge[hidden]{display:none}[data-theme="halloween"] .nabti-start-card{background:linear-gradient(150deg,#fff3e7,#f4ecfb)}
+
+</style>
+<script src="../shared-result.js"></script>
+</head>
+<body>
+<!-- ============================================================
+  나BTI 테스트 - GitHub Pages 독립 실행 버전
+  ============================================================ -->
+<!-- 카카오톡 공유하기(카카오링크) SDK -->
+<script src="../native-share.js"></script>
+<script>
+  if (window.Kakao && !Kakao.isInitialized()) {
+    Kakao.init('8cda59c7d8975498cb3abab3ce7f23b8');
+  }
+</script>
+
+<div id="nabti-root"></div>
+
+<style>
+  #nabti-root {
+    --pink: #ff8fab;
+    --lavender: #b8a9d9;
+    --cream: #fffaf3;
+    --text: #4a3f4f;
+    max-width: 480px;
+    margin: 24px auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    color: var(--text);
+    box-sizing: border-box;
+  }
+  #nabti-root * { box-sizing: border-box; }
+  .nabti-card {
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 8px 24px rgba(170, 140, 180, 0.18);
+    padding: 28px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .nabti-banner {
+    width: 100%;
+    border-radius: 16px;
+    display: block;
+    margin-bottom: 16px;
+  }
+  .nabti-title {
+    font-size: 22px;
+    font-weight: 800;
+    text-align: center;
+    margin: 4px 0 8px;
+  }
+  .nabti-sub {
+    font-size: 14px;
+    text-align: center;
+    color: #8a7d8f;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .nabti-cover-img {
+    width: 70%;
+    display: block;
+    margin: 0 auto 20px;
+    border-radius: 16px;
+  }
+  .nabti-start-card {
+    background:
+      radial-gradient(circle at 12% 10%, rgba(255,207,224,.48), transparent 28%),
+      radial-gradient(circle at 88% 16%, rgba(211,199,246,.48), transparent 28%),
+      linear-gradient(165deg,#fffaf3 0%,#fff6fa 48%,#f4f0ff 100%);
+    min-height:620px;padding:28px 22px 24px;
+  }
+  .nabti-start-kicker{text-align:center;font-size:11px;font-weight:850;letter-spacing:.12em;color:#b586a5;margin-bottom:9px}
+  .nabti-start-card .nabti-title{font-size:28px;line-height:1.3;color:#4a3f4f;margin-top:0}
+  .nabti-start-card .nabti-sub{font-size:14px;line-height:1.7;color:#8b7d90;margin-bottom:12px}
+  .nabti-start-visual{position:relative;height:250px;max-width:330px;margin:0 auto 12px}
+  .nabti-bubble{position:absolute;width:126px;height:126px;border-radius:30px;background:rgba(255,255,255,.82);box-shadow:0 12px 26px rgba(148,112,144,.12);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.9)}
+  .nabti-bubble img{width:92%;height:92%;object-fit:contain;display:block}
+  .nabti-bubble.a{left:7%;top:12px;transform:rotate(-5deg)}.nabti-bubble.b{right:7%;top:7px;transform:rotate(5deg)}
+  .nabti-bubble.c{left:18%;bottom:0;transform:rotate(3deg)}.nabti-bubble.d{right:18%;bottom:5px;transform:rotate(-3deg)}
+  .nabti-start-features{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:0 0 16px}
+  .nabti-start-features span{font-size:10px;font-weight:800;color:#8d748f;background:rgba(255,255,255,.72);border:1px solid #f0e3eb;padding:6px 9px;border-radius:999px}
+  .nabti-start-card .nabti-nickname-input{background:rgba(255,255,255,.9);border-color:#ecdde6}
+  .nabti-start-card .nabti-btn{background:linear-gradient(135deg,#ee8eac,#b9a2dc);box-shadow:0 10px 22px rgba(189,137,174,.18)}
+  .nabti-start-foot{text-align:center;color:#aa99a8;font-size:10px;line-height:1.5;margin-top:12px}
+  @media(max-width:520px){#nabti-root{margin:10px auto}.nabti-start-card{border-radius:0;min-height:calc(100vh - 20px);padding-top:24px}.nabti-start-visual{height:235px}.nabti-bubble{width:116px;height:116px}}
+  .nabti-nickname-input {
+    display: block;
+    width: 100%;
+    padding: 13px 16px;
+    margin-bottom: 14px;
+    border: 2px solid #f2e6ee;
+    border-radius: 14px;
+    font-size: 15px;
+    text-align: center;
+    color: var(--text);
+    background: #fffafd;
+    font-family: inherit;
+  }
+  .nabti-nickname-input:focus {
+    outline: none;
+    border-color: var(--pink);
+  }
+  .nabti-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--pink), #ffb6c9);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .nabti-btn:active { transform: scale(0.97); }
+  .nabti-btn img { width: 22px; height: 22px; }
+
+  .nabti-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 18px;
+  }
+  .nabti-paw {
+    width: 18px;
+    height: 18px;
+    opacity: 0.25;
+    transition: opacity 0.2s ease;
+  }
+  .nabti-paw.filled { opacity: 1; }
+  .nabti-qcount {
+    margin-left: auto;
+    font-size: 12px;
+    color: #a598a8;
+    font-weight: 600;
+  }
+
+  .nabti-qicon {
+    width: 56px;
+    height: 56px;
+    display: block;
+    margin: 0 auto 10px;
+  }
+  .nabti-question {
+    font-size: 17px;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .nabti-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border: 2px solid #f2e6ee;
+    background: #fffafd;
+    border-radius: 14px;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .nabti-option:hover, .nabti-option:active {
+    border-color: var(--pink);
+    background: #fff0f5;
+  }
+
+  .nabti-loading {
+    text-align: center;
+    padding: 30px 0;
+  }
+  .nabti-loading img { width: 140px; }
+  .nabti-loading p {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #a598a8;
+    font-weight: 600;
+  }
+
+  .nabti-result-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-width: 320px;
+    margin: 0 auto 14px;
+  }
+  .nabti-result-frame img.frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+  }
+  .nabti-result-frame img.character {
+    position: absolute;
+    top: 8%; left: 8%; right: 8%; bottom: 8%;
+    width: 84%;
+    height: 84%;
+    object-fit: cover;
+    border-radius: 16px;
+    z-index: 1;
+  }
+  .nabti-badge {
+    width: 60px;
+    position: absolute;
+    top: -18px;
+    right: 6%;
+    z-index: 3;
+  }
+  .nabti-type-code {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #b598c9;
+    margin-top: 4px;
+  }
+  .nabti-type-name {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 2px 0 10px;
+  }
+  .nabti-blurb {
+    font-size: 14.5px;
+    line-height: 1.7;
+    text-align: center;
+    color: #6a5d6f;
+    padding: 0 6px 18px;
+  }
+
+  .nabti-sensitivity {
+    background: #fbf5fa;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 18px;
+  }
+  .nabti-sensitivity-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .nabti-sensitivity-title img { width: 28px; height: 28px; }
+  .nabti-gauge-wrap {
+    position: relative;
+    width: 100%;
+  }
+  .nabti-gauge-wrap img.gauge-bg { width: 100%; display: block; }
+  .nabti-gauge-fill {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    background: rgba(255,255,255,0.55);
+    border-radius: 999px;
+    right: 0;
+    transition: right 0.6s ease;
+  }
+  .nabti-sensitivity-desc {
+    font-size: 13px;
+    color: #8a7d8f;
+    margin-top: 8px;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .nabti-btn-row {
+    display: flex;
+    gap: 10px;
+  }
+  .nabti-btn-outline {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 999px;
+    border: 2px solid #f2e6ee;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .nabti-btn-outline img { width: 18px; height: 18px; }
+
+  .nabti-prev-link {
+    display: block;
+    text-align: center;
+    margin-top: 4px;
+    font-size: 13px;
+    color: #b0a3b5;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .nabti-compat {
+    background: #fff7fa;
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    text-align: center;
+    color: #6a5d6f;
+  }
+  .nabti-compat b { color: #d16a94; }
+
+  .nabti-nickname-tag {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 2px 0 16px;
+    padding: 8px 0;
+    border-top: 1px dashed #f0dfe8;
+    border-bottom: 1px dashed #f0dfe8;
+  }
+  .nabti-nickname-tag b { color: #d16a94; }
+
+  .nabti-trait-row { margin-bottom: 12px; }
+  .nabti-trait-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #8a7d8f;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  .nabti-trait-bar {
+    position: relative;
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    background: #f2e6ee;
+    overflow: hidden;
+  }
+  .nabti-trait-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: linear-gradient(90deg, var(--pink), var(--lavender));
+    border-radius: 999px;
+  }
+
+  .nabti-detail-section { margin-bottom: 16px; }
+  .nabti-detail-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14.5px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .nabti-detail-list {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: #6a5d6f;
+  }
+  .nabti-detail-list li { margin-bottom: 4px; }
+  .nabti-detail-text {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: #6a5d6f;
+  }
+  .nabti-section-divider {
+    border: none;
+    border-top: 1px dashed #f0dfe8;
+    margin: 18px 0;
+  }
+
+  .nabti-rank-title {
+    font-size: 14.5px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .nabti-rank-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff7fa;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+  }
+  .nabti-rank-row .rank-num {
+    font-weight: 800;
+    color: #d16a94;
+    width: 28px;
+    flex-shrink: 0;
+  }
+  .nabti-rank-row.me { background: linear-gradient(90deg, #fff0f5, #f5f0ff); border: 1px solid #f2c6dc; }
+
+  .nabti-othertypes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .nabti-othertype-chip {
+    background: #fbf5fa;
+    border-radius: 12px;
+    padding: 9px 10px;
+    font-size: 12.5px;
+    text-align: center;
+    color: #6a5d6f;
+  }
+  .nabti-othertype-chip b { color: #b598c9; }
+
+  .nabti-btn-full {
+    margin-bottom: 10px;
+  }
+
+  .nabti-toggle-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 2px dashed #f2c6dc;
+    border-radius: 14px;
+    background: #fff7fa;
+    color: #d16a94;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .nabti-compat-sub-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin: 12px 0 8px;
+    color: #8a7d8f;
+  }
+
+  .nabti-detail-wrap {
+    overflow: visible;
+    max-height: none;
+    opacity: 1;
+    transform: none;
+  }
+  .nabti-detail-wrap.nabti-collapsed {
+    display: none;
+  }
+
+  .nabti-hidden { display: none !important; }
+
+  .nabti-shared-tag {
+    text-align: center;
+    font-size: 13px;
+    color: #b598c9;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+/* Result hierarchy: animal, three traits, optional detail. */
+.nabti-result-frame{aspect-ratio:auto;max-width:210px;margin:0 auto 12px}.nabti-result-frame .character{position:relative!important;inset:auto!important;width:100%!important;height:auto!important;object-fit:contain!important;border-radius:24px}
+.nabti-type-name{font-size:23px}.nabti-key-three{padding:14px 18px 14px 34px;text-align:left;background:#fff8ed;border-radius:18px;line-height:1.65;color:#514656;font-size:14px}.nabti-key-three li+li{margin-top:6px}
+.nabti-response-note{font-size:12px;line-height:1.65;color:#756a7b}.nabti-response-hint{font-size:12px;color:#81758a;margin:6px 0 14px}.nabti-options{display:grid;gap:9px}.nabti-option{margin:0;min-height:48px;border-radius:14px;font-size:14px}.nabti-option[aria-pressed="true"]{border:2px solid #926fa4;background:#f1e7f7}.nabti-option:focus-visible{outline:3px solid #926fa4;outline-offset:2px}.nabti-progress-wrap{flex-wrap:wrap;gap:3px}.nabti-sensitivity{background:#faf6ff;border:none}.nabti-gauge-wrap{display:none}.nabti-nickname-tag{border:0}.nabti-compat{background:#fff;border:1px solid #f0e7ed;border-radius:16px;font-size:13px;line-height:1.65}.nabti-start-foot{line-height:1.6}
+
+body{background:#fffaf4;color:#332d43} details>summary{min-height:44px;display:flex;align-items:center} button{font-family:inherit}
+/* Detailed storybook illustrations with space for five response choices. */
+.nabti-qicon{width:112px;height:102px;object-fit:contain;margin:2px auto 14px}
+.nabti-loading img{width:190px;height:190px;object-fit:contain}
+.nabti-paw{width:17px;height:17px;object-fit:contain;opacity:.28;filter:grayscale(1)}
+.nabti-paw.filled{opacity:1;filter:none}.nabti-paw.current{opacity:1;filter:none;transform:scale(1.13);outline:1px solid #b79ad0;outline-offset:2px;border-radius:50%}
+.nabti-detail-title .nabti-detail-art{width:38px;height:38px;object-fit:contain;vertical-align:middle;flex-shrink:0}
+@media(max-width:370px){.nabti-qicon{width:100px;height:94px}.nabti-progress-wrap{gap:2px}.nabti-paw{width:16px;height:16px}}
+
+/* Phone-only entry screen: restore animal scale and use empty vertical space.
+   All result screens and the original illustrations remain untouched. */
+@media (max-width:520px) {
+ #nabti-root{margin:0 auto}
+ .nabti-start-card{
+   min-height:100dvh;
+   border-radius:0;
+   padding:14px 18px;
+   display:flex;
+   flex-direction:column;
+   justify-content:space-evenly;
+ }
+ .nabti-start-card .nabti-title{font-size:clamp(23px,6.3vw,28px);line-height:1.24;margin:0 0 5px}
+ .nabti-start-card .nabti-sub{font-size:14px;line-height:1.45;margin-bottom:8px}
+ .nabti-season-badge{margin-bottom:7px}
+ .nabti-start-visual{
+   height:clamp(200px,34dvh,255px);
+   max-width:310px;
+   flex-shrink:0;
+   margin:0 auto 6px;
+ }
+ .nabti-bubble{
+   width:clamp(108px,17dvh,120px);
+   height:clamp(108px,17dvh,120px);
+ }
+ .nabti-start-features{margin-bottom:9px}
+ .nabti-start-card .nabti-nickname-input{padding:11px 14px;margin-bottom:9px}
+ .nabti-start-card .nabti-btn{padding:12px 14px}
+ .nabti-start-foot{margin-top:7px}
+}
+@media (max-width:520px) and (max-height:560px) {
+ .nabti-start-visual{height:175px}
+ .nabti-bubble{width:94px;height:94px}
+ .nabti-start-card{padding-top:10px;padding-bottom:10px}
+}
+
+</style>
+
+<script src="../character-theme-catalog.js"></script>
+<script src="../character-themes.js"></script>
+<script>
+(function() {
+  const IMG = {
+    bgPattern: "../../../../../illustrations/v1/loading.webp",
+    coverImage: "../../../../../illustrations/v1/loading.webp",
+    playButton: "../../../icons/play.svg",
+    pawPrint: "../../../illustrations/v1/paw.webp",
+    loadingChick: "../../../illustrations/v1/loading.webp",
+    refreshIcon: "../../../icons/refresh.svg",
+    shareIcon: "../../../icons/share.svg",
+    badgeRibbon: "../../../../../illustrations/v1/loading.webp",
+    gaugeBar: "../../../../../illustrations/v1/loading.webp",
+    hedgehogGauge: "../../../illustrations/v1/radar.webp",
+    snsFrame: "../../../../../illustrations/v1/loading.webp",
+    iconEmotion: "../../../illustrations/v1/emotion.webp",
+    iconRelationship: "../../../illustrations/v1/relationship.webp",
+    iconAlonetime: "../../../illustrations/v1/alone.webp",
+    iconPlanning: "../../../illustrations/v1/planning.webp",
+    characters: {
+      INTJ: "../../../characters/nabti-a/INTJ.webp", INTP: "../../../characters/nabti-a/INTP.webp",
+      ENTJ: "../../../characters/nabti-a/ENTJ.webp", ENTP: "../../../characters/nabti-a/ENTP.webp",
+      INFJ: "../../../characters/nabti-a/INFJ.webp", INFP: "../../../characters/nabti-a/INFP.webp",
+      ENFJ: "../../../characters/nabti-a/ENFJ.webp", ENFP: "../../../characters/nabti-a/ENFP.webp",
+      ISTJ: "../../../characters/nabti-a/ISTJ.webp", ISFJ: "../../../characters/nabti-a/ISFJ.webp",
+      ESTJ: "../../../characters/nabti-a/ESTJ.webp", ESFJ: "../../../characters/nabti-a/ESFJ.webp",
+      ISTP: "../../../characters/nabti-a/ISTP.webp", ISFP: "../../../characters/nabti-a/ISFP.webp",
+      ESTP: "../../../characters/nabti-a/ESTP.webp", ESFP: "../../../characters/nabti-a/ESFP.webp"
+    }
+  };
+
+  function characterUrl(type){return window.PlayzipCharacters.resolve(type,IMG.characters[type]);}
+  function themeBadge(){const theme=window.PlayzipCharacters.current();return `<span class="nabti-season-badge" data-season-badge ${theme?'':'hidden'}>${theme?theme.label:''}</span>`;}
+  function refreshCharacterArtwork(){
+    const theme=window.PlayzipCharacters.current();root.dataset.theme=theme?theme.id:'';
+    root.querySelectorAll('img[data-character]').forEach(img=>{
+      const type=img.dataset.character,src=characterUrl(type);
+      img.onerror=()=>{img.onerror=null;img.src=window.PlayzipCharacters.asset(IMG.characters[type]);};
+      if(img.getAttribute('src')!==src)img.src=src;
+    });
+    root.querySelectorAll('[data-season-badge]').forEach(e=>{e.hidden=!theme;e.textContent=theme?theme.label:'';});
+  }
+  window.refreshPlayzipCharacterArtwork=refreshCharacterArtwork;
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshCharacterArtwork();});
+
+  const RESULTS = {
+    INTJ: { animal: "신비로운 부엉이", species: "부엉이", color: ["#3a3560", "#b8a9d9"], blurb: "차분하고 통찰력 있는 전략가 타입. 혼자만의 세계에서 큰 그림을 그리는 걸 좋아하고, 한번 정한 목표는 끝까지 파고들어요.",
+      keyTraits: ["혼자 생각을 정리할 때 가장 큰 집중력을 발휘해요", "비효율적인 방식엔 예민하게 반응하는 편이에요", "장기 목표를 세우면 조용히, 그러나 끝까지 밀고 나가요", "논리적으로 납득되지 않으면 쉽게 움직이지 않아요"],
+      work: "군더더기 없는 효율을 추구해서 불필요한 과정은 과감히 걷어내는 편이에요. 혼자 깊이 몰입할 수 있을 때 실력이 가장 반짝이고, 전체 그림을 먼저 그린 뒤 세부 계획을 채워나가는 방식을 좋아해요.",
+      relationship: "말수가 적어 다소 새침해 보일 수 있지만, 마음을 연 사람에게는 누구보다 든든하고 한결같은 사람이 되어줘요. 넓고 얕은 인연보다는 몇 안 되는 깊은 관계를 훨씬 편안하게 느껴요.",
+      strength: "얽히고설킨 문제를 차분히 구조화해 해답을 설계하는 힘이 최고의 무기예요. 스스로 결정할 수 있는 자리, 혹은 긴 호흡의 전략을 짜는 포지션에서 특히 진가를 발휘해요.",
+      stress: "계획이 틀어지거나 무능하다는 평가를 받으면 스트레스를 크게 받아요. 혼자만의 시간을 확보해서 상황을 재정비하는 게 도움이 돼요.",
+      caution: "완벽주의 성향 때문에 스스로를 과도하게 몰아붙이지 않도록 주의하세요. 주변 사람에게 감정을 표현하는 연습도 필요해요." },
+    INTP: { animal: "호기심 많은 여우", species: "여우", color: ["#8fd9c4", "#c9b8e8"], blurb: "궁금한 건 못 참는 탐구형. 원리와 이유를 파헤치는 걸 즐기고, 엉뚱하지만 날카로운 아이디어를 잘 던져요.",
+      keyTraits: ["원리와 이유를 파고드는 걸 즐겨요", "관심 있는 주제엔 몰입도가 엄청나요", "규칙보다 논리적 타당성을 더 중요하게 여겨요", "즉흥적인 아이디어가 툭툭 튀어나와요"],
+      work: "정해진 틀 안에서 반복하는 일보다 새로운 개념을 파고드는 일에서 훨씬 신이 나요. 생각을 자유롭게 펼칠 수 있는 분위기일 때 기발한 해법이 술술 나와요.",
+      relationship: "처음엔 곁을 잘 안 주는 편이지만, 마음을 열고 나면 편안하고 유쾌한 친구가 되어줘요. 티키타카 토론은 즐겨도, 감정싸움으로 번지는 건 별로 좋아하지 않아요.",
+      strength: "다른 사람은 지나치는 허점이나 새로운 각도를 짚어내는 통찰력이 큰 무기예요. 연구나 분석, 아이디어를 기획하는 일에서 특히 빛을 발해요.",
+      stress: "마감이나 반복적인 잡무가 쌓이면 무기력해지기 쉬워요. 짧게라도 새로운 주제를 탐구하는 시간을 가지면 회복이 빨라요.",
+      caution: "생각에 빠져 마감이나 약속을 놓치지 않도록 최소한의 장치를 마련해두세요." },
+    ENTJ: { animal: "리더십 있는 사자", species: "사자", color: ["#e8b923", "#7a2e3a"], blurb: "타고난 리더형. 목표가 생기면 거침없이 밀어붙이고, 조직을 이끄는 데서 에너지를 얻어요.",
+      keyTraits: ["목표가 생기면 망설임 없이 실행에 옮겨해요", "비효율과 우유부단함을 견디기 힘들어해요", "자연스럽게 무리를 이끄는 자리에 서게 돼요", "확신이 있을 땐 강하게 밀어붙여요"],
+      work: "큰 목표를 세우고 팀을 하나로 모아 밀어붙이는 데 탁월한 재능이 있어요. 결정을 직접 내릴 수 있는 자리, 혹은 프로젝트를 총괄하는 역할에서 유독 빛나요.",
+      relationship: "직설적인 화법 탓에 차갑게 느껴질 때도 있지만, 함께하는 사람의 성장을 진심으로 응원하는 마음을 갖고 있어요. 실력 있는 사람들과 함께할 때 큰 자극과 에너지를 받아요.",
+      strength: "사람과 자원을 조직해 결과로 이어내는 리더십이 가장 큰 강점이에요. 팀을 이끌거나 새로운 프로젝트를 총괄할 때 그 힘이 가장 크게 드러나요.",
+      stress: "상황이 통제 밖으로 벗어나거나 무능함을 지적받으면 예민해져요. 잠시 멈춰서 감정을 정리하는 시간을 가지면 도움이 돼요.",
+      caution: "주변 사람의 속도를 지나치게 다그치지 않도록, 가끔은 완급 조절이 필요해요." },
+    ENTP: { animal: "장난기 많은 원숭이", species: "원숭이", color: ["#f4a259", "#4ea8a8"], blurb: "아이디어 뱅크형 토론가. 새로운 생각을 떠올리는 걸 좋아하고, 재치있는 말솜씨로 분위기를 이끌어요.",
+      keyTraits: ["새로운 아이디어를 떠올리는 순간이 제일 즐거워요", "논쟁과 토론을 놀이처럼 즐겨요", "정해진 틀보다 변수 있는 상황을 더 좋아해요", "재치있는 말솜씨로 분위기를 살려요"],
+      work: "브레인스토밍이나 기획 초반 단계에서 특히 두각을 나타내요. 똑같은 루틴보다 매번 새로운 과제가 주어질 때 몰입도가 확 올라가요.",
+      relationship: "대화를 주도하며 분위기를 유쾌하게 이끌지만, 가끔은 깊고 진지한 대화도 필요로 해요. 지적인 자극을 주고받을 수 있는 사람과 유독 잘 통해요.",
+      strength: "기존 틀을 깨는 발상의 전환이 최대 강점이에요. 아이디어를 실행으로 옮겨줄 파트너를 만나면 시너지가 배로 커져요.",
+      stress: "지루하고 반복적인 상황이 길어지면 답답함을 느껴요. 새로운 자극이나 짧은 여행, 대화 상대를 바꿔보는 것도 좋은 환기가 돼요.",
+      caution: "시작한 일을 끝까지 마무리하는 습관을 조금 더 챙겨보세요." },
+    INFJ: { animal: "신비한 사슴", species: "사슴", color: ["#d98a8a", "#a8bfa0"], blurb: "깊이 있는 통찰의 소유자. 사람의 마음을 잘 읽고, 조용하지만 뚜렷한 신념을 갖고 있어요.",
+      keyTraits: ["사람들의 감정 변화를 예민하게 알아차려요", "조용하지만 뚜렷한 신념을 갖고 있어요", "의미 없는 관계보다 깊이 있는 소수와의 관계를 선호해요", "겉으론 차분해도 속으론 이상을 향해 끊임없이 고민해요"],
+      work: "의미와 가치를 느낄 수 있는 일일수록 몰입도가 확 올라가요. 사람을 돕거나 성장하도록 이끄는 방향의 일에서 만족감을 크게 느껴요.",
+      relationship: "적은 사람과 깊이 연결되는 쪽을 선호하고, 상대의 마음을 먼저 헤아리는 편이에요. 신뢰가 쌓이고 나면 누구보다 헌신적인 사람이 되어줘요.",
+      strength: "사람의 마음을 읽고 앞날을 내다보는 통찰력이 강점이에요. 상담이나 기획, 콘텐츠처럼 사람과 의미를 다루는 분야에서 특히 빛을 발해요.",
+      stress: "자신의 신념이 무시당하거나 갈등이 계속되면 지치기 쉬워요. 혼자 생각을 정리할 시간을 충분히 가지는 게 회복에 도움이 돼요.",
+      caution: "완벽한 이상과 현실 사이의 간극 때문에 스스로를 몰아붙이지 않도록 주의하세요." },
+    INFP: { animal: "몽환적인 토끼", species: "토끼", color: ["#c9aee8", "#f5c6d6"], blurb: "감성 가득한 이상주의자. 자신만의 가치관이 뚜렷하고, 따뜻한 마음으로 세상을 바라봐요.",
+      keyTraits: ["자신만의 가치관이 뚜렷해요", "감정을 섬세하게 느끼고 표현해요", "겉보기보다 속에 확고한 신념이 있어요", "상상력이 풍부하고 감성적인 것에 끌려요"],
+      work: "자율성이 보장되고 스스로 의미를 느낄 수 있는 일에서 최고의 몰입을 보여줘요. 창작이나 글쓰기, 상담처럼 감정과 의미를 다루는 분야와 특히 잘 맞아요.",
+      relationship: "겉으로 살갑게 표현하지 않아도 마음속으로는 상대를 깊이 아껴요. 진심이 통하는 몇 사람과의 관계를 무엇보다 소중히 여겨요.",
+      strength: "섬세한 감성과 깊은 공감 능력이 강점이에요. 이 강점이 잘 피어나려면 자신만의 속도를 존중해주는 환경이 필요해요.",
+      stress: "비판을 받거나 가치관이 흔들리면 크게 위축돼요. 혼자만의 시간에 좋아하는 것에 몰입하면 회복이 빨라요.",
+      caution: "현실적인 마감이나 계획을 챙기는 습관을 조금 더 들이면 좋아요." },
+    ENFJ: { animal: "다정한 골든리트리버", species: "골든리트리버", color: ["#f5c99b", "#fff2df"], blurb: "따뜻하게 사람을 이끄는 다정한 리더. 주변 사람들을 잘 챙기고, 함께 성장하는 걸 좋아해요.",
+      keyTraits: ["주변 사람의 감정을 잘 캐치해요", "사람들을 이끌고 성장시키는 데서 보람을 느껴요", "갈등 상황에서 중재자 역할을 자처해요", "따뜻하면서도 은근히 계획적이에요"],
+      work: "사람을 성장시키고 관계를 조율하는 역할에서 탁월한 능력을 보여줘요. 팀워크가 중요한 프로젝트나 교육, 코칭 분야와 특히 잘 맞아요.",
+      relationship: "주변 사람을 세심하게 챙기며 관계 속에서 에너지를 얻는 편이에요. 다만 그만큼 스스로를 돌보는 것도 잊지 않아야 해요.",
+      strength: "사람들을 하나로 모으고 동기를 불어넣는 리더십이 강점이에요. 팀 전체의 사기를 끌어올리는 자리에서 유독 빛을 발해요.",
+      stress: "주변 사람들과 갈등이 생기거나 인정받지 못하면 스트레스를 크게 받아요. 신뢰하는 사람에게 솔직한 마음을 털어놓는 게 도움이 돼요.",
+      caution: "남을 챙기느라 정작 자신의 욕구는 뒤로 미루지 않도록 주의하세요." },
+    ENFP: { animal: "통통 튀는 다람쥐", species: "다람쥐", color: ["#ff8b7e", "#8ecbe8"], blurb: "에너지 넘치는 자유로운 영혼. 새로운 사람과 경험에 늘 열려 있고, 주변을 즐겁게 만들어요.",
+      keyTraits: ["새로운 사람과 경험에 늘 열려있어요", "에너지가 넘치고 감정 표현이 풍부해요", "가능성을 보면 일단 저질러보는 편이에요", "주변을 즐겁게 만드는 재주가 있어요"],
+      work: "아이디어가 많이 필요한 기획이나 마케팅, 창작 분야에서 두각을 나타내요. 자유롭고 유연한 분위기일수록 창의력이 폭발적으로 발휘돼요.",
+      relationship: "사람들과 금세 가까워지고, 관계 속에서 큰 에너지를 얻는 편이에요. 진심 어린 관심과 응원을 아끼지 않는 사람이에요.",
+      strength: "사람을 끌어당기는 매력과 밝은 에너지가 강점이에요. 새로운 프로젝트를 시작하고 널리 알리는 일에 특히 유리해요.",
+      stress: "반복적인 일상이나 자유가 제한되면 답답함을 느껴요. 새로운 자극이나 사람들과의 즐거운 시간이 최고의 회복제예요.",
+      caution: "시작한 일을 끝까지 마무리하는 힘을 조금 더 길러보면 좋아요." },
+    ISTJ: { animal: "성실한 비버", species: "비버", color: ["#4f7a4f", "#c9b28a"], blurb: "꼼꼼하고 책임감 강한 계획의 달인. 맡은 일은 확실하게 끝내고, 신뢰를 가장 중요하게 생각해요.",
+      keyTraits: ["맡은 일은 확실하게 끝내야 마음이 편해요", "계획과 원칙을 중요하게 생각해요", "말보다 행동으로 신뢰를 쌓아요", "변화보다 안정적인 방식을 선호해요"],
+      work: "체계적이고 꼼꼼하게 업무를 처리하는 능력이 강점이에요. 규칙과 절차가 명확한 환경에서 가장 안정적인 모습을 보여줘요.",
+      relationship: "말수가 많지 않아도 책임감 있게 관계를 지켜내요. 오래 알고 지낸 사람에게는 누구보다 깊은 신뢰를 보여줘요.",
+      strength: "꾸준함과 정확성이 최대 강점이에요. 장기 프로젝트나 품질 관리처럼 세심함이 필요한 일에서 진가를 발휘해요.",
+      stress: "갑작스러운 변화나 계획이 틀어지면 큰 스트레스를 받아요. 익숙한 루틴으로 돌아가는 것이 안정에 도움이 돼요.",
+      caution: "융통성을 조금 더 발휘해보면 새로운 기회를 놓치지 않을 수 있어요." },
+    ISFJ: { animal: "포근한 코알라", species: "코알라", color: ["#c9bfa8", "#b8e0c8"], blurb: "헌신적이고 포근한 수호자 타입. 주변 사람을 조용히 챙기고, 안정적인 분위기를 만들어요.",
+      keyTraits: ["주변 사람을 조용히 잘 챙겨요", "안정적이고 편안한 분위기를 만들어요", "부탁을 잘 거절하지 못하는 편이에요", "자신보다 남을 먼저 배려해요"],
+      work: "세심하고 헌신적인 태도로 팀에 안정감을 불어넣어요. 사람을 돌보거나 곁에서 지원하는 역할에서 만족감을 크게 느껴요.",
+      relationship: "조용하지만 한결같은 마음으로 관계를 지켜내요. 신뢰하는 사람에게는 아낌없이 마음을 내어주는 편이에요.",
+      strength: "따뜻한 배려심과 꾸준한 헌신이 강점이에요. 팀의 분위기를 안정시키고 신뢰를 쌓는 데 큰 힘을 발휘해요.",
+      stress: "자신의 노력을 몰라줄 때 서운함이 쌓여요. 가끔은 자신의 마음을 솔직히 표현하는 연습이 필요해요.",
+      caution: "남을 배려하느라 자신의 감정과 몸 상태를 소홀히 하지 않도록 주의하세요." },
+    ESTJ: { animal: "야무진 비글", species: "비글", color: ["#2c4e7a", "#c14e4e"], blurb: "조직력 있는 실행력 대장. 체계적으로 일을 처리하고, 맡은 역할에 확실한 책임을 다해요.",
+      keyTraits: ["체계적으로 일을 처리하는 걸 좋아해요", "맡은 역할에 확실한 책임을 다해요", "효율과 결과를 중요하게 생각해요", "리더 역할을 자연스럽게 맡아요"],
+      work: "조직력과 실행력이 강점이라 프로젝트를 체계적으로 이끄는 역할에 잘 맞아요. 목표와 기준이 명확할 때 최고의 성과를 만들어내요.",
+      relationship: "직설적이지만 믿음직한 태도로 신뢰를 쌓아가요. 약속과 책임을 소중히 여기는 사람과 특히 잘 맞아요.",
+      strength: "체계를 세우고 밀어붙이는 추진력이 최대 강점이에요. 조직을 관리하거나 운영하는 분야에서 특히 두각을 나타내요.",
+      stress: "일이 계획대로 되지 않거나 무능함을 지적받으면 예민해져요. 잠시 멈추고 상황을 재정비하는 시간이 필요해요.",
+      caution: "상대의 방식도 존중해주는 유연함을 조금 더 가져보세요." },
+    ESFJ: { animal: "친화력 좋은 햄스터", species: "햄스터", color: ["#f5e08a", "#f7b8c4"], blurb: "다정하고 살가운 분위기 메이커. 사람들을 잘 챙기고, 함께 있으면 편안한 분위기를 만들어요.",
+      keyTraits: ["사람들을 잘 챙기고 살갑게 대해요", "함께 있으면 편안한 분위기를 만들어요", "다른 사람의 반응에 신경을 많이 써요", "조화롭고 화목한 관계를 중요하게 생각해요"],
+      work: "협업과 소통이 중요한 업무에서 강점이 빛을 발해요. 사람들 사이를 부드럽게 조율하는 역할에서 만족도가 높아요.",
+      relationship: "다정하고 세심하게 주변을 챙기며, 관계 속에서 안정감을 느껴요. 인정과 감사의 말 한마디에 큰 힘을 얻는 편이에요.",
+      strength: "사람을 편안하게 만드는 친화력이 강점이에요. 팀의 분위기를 부드럽게 풀어주는 역할에서 특히 빛나요.",
+      stress: "관계에서 갈등이 생기거나 비판을 받으면 크게 신경 쓰여요. 신뢰하는 사람과 솔직한 대화를 나누는 게 도움이 돼요.",
+      caution: "남의 기대에 맞추느라 자신의 욕구를 놓치지 않도록 주의하세요." },
+    ISTP: { animal: "쿨한 고양이", species: "고양이", color: ["#9aa0a6", "#6f8faf"], blurb: "쿨하게 문제를 해결하는 만능 재주꾼. 말보다 행동으로 보여주고, 손으로 만드는 걸 좋아해요.",
+      keyTraits: ["말보다 행동으로 보여주는 편이에요", "손으로 만들고 고치는 걸 좋아해요", "위기 상황에서 침착하게 대처해요", "자유롭고 얽매이지 않는 걸 좋아해요"],
+      work: "손으로 직접 해결하는 실무나 기술적인 문제에서 두각을 나타내요. 자율성이 보장된 환경에서 가장 높은 효율을 보여줘요.",
+      relationship: "겉으론 무심해 보여도 필요한 순간엔 확실하게 힘이 되어줘요. 깊은 대화보다 함께하는 활동으로 친밀함을 쌓아가요.",
+      strength: "실용적인 문제 해결 능력이 강점이에요. 위기 상황에서도 침착함을 잃지 않는 태도가 큰 무기가 돼요.",
+      stress: "감정을 강요받거나 자유가 제한되면 답답함을 느껴요. 혼자 몰입할 수 있는 활동으로 스트레스를 풀어보세요.",
+      caution: "감정 표현을 조금 더 자주 해보면 관계가 한층 편안해질 거예요." },
+    ISFP: { animal: "감성적인 판다", species: "판다", color: ["#f2b8c6", "#a8c3a0"], blurb: "감성적이고 자유로운 예술가 타입. 자기만의 속도로 세상을 느끼고, 소소한 아름다움을 잘 발견해요.",
+      keyTraits: ["자기만의 속도로 세상을 느껴요", "소소한 아름다움을 잘 발견해요", "갈등보다 조화로운 분위기를 선호해요", "겉으론 온화해도 확고한 가치관이 있어요"],
+      work: "자율성과 감각을 살릴 수 있는 창작, 디자인, 돌봄 분야에서 만족도가 높아요. 자기만의 색깔로 표현하는 걸 즐기는 편이에요.",
+      relationship: "편안하고 다정한 태도로 관계를 맺지만, 갈등은 되도록 피하려고 해요. 신뢰하는 사람에게는 따뜻한 배려를 아낌없이 건네요.",
+      strength: "섬세한 감각과 유연한 태도가 강점이에요. 예술적 감각이 필요한 분야에서 유독 빛을 발해요.",
+      stress: "갈등이 생기거나 가치관이 침해당하면 조용히 스트레스를 쌓아요. 자연이나 취미에 몰입하는 시간이 큰 도움이 돼요.",
+      caution: "하고 싶은 말을 미루지 말고 적절한 타이밍에 표현하는 연습을 해보세요." },
+    ESTP: { animal: "액티브한 치타", species: "치타", color: ["#ff8c42", "#333333"], blurb: "거침없이 행동하는 모험가. 생각보다 몸이 먼저 움직이고, 순간의 재미를 놓치지 않아요.",
+      keyTraits: ["생각보다 몸이 먼저 움직여요", "순간의 재미와 스릴을 즐겨요", "위기 상황에서 오히려 빛을 발해요", "규칙보다 실전 감각을 믿어요"],
+      work: "빠른 판단과 실행력이 필요한 현장에서 두각을 나타내요. 변화가 많고 역동적인 환경일수록 에너지가 살아나요.",
+      relationship: "유쾌하고 스스럼없는 태도로 금세 친해지는 편이에요. 함께 활동하며 즐거움을 나누는 관계를 선호해요.",
+      strength: "순발력과 실전 대응력이 최대 강점이에요. 예측할 수 없는 상황일수록 오히려 진가가 드러나요.",
+      stress: "답답하고 통제된 환경이 오래 지속되면 스트레스를 받아요. 몸을 움직이는 활동으로 에너지를 발산하는 게 도움이 돼요.",
+      caution: "순간의 판단만큼 장기적인 계획도 함께 챙겨보면 좋아요." },
+    ESFP: { animal: "신나는 앵무새", species: "앵무새", color: ["#ff9ecb", "#c39bd3"], blurb: "무대 위의 흥 부자. 사람들과 함께 있을 때 가장 빛나고, 분위기를 즐겁게 띄우는 재주가 있어요.",
+      keyTraits: ["사람들과 함께 있을 때 가장 빛나요", "분위기를 즐겁게 띄우는 재주가 있어요", "감정 표현이 솔직하고 풍부해요", "순간을 즐기는 걸 중요하게 생각해요"],
+      work: "사람들과 어울리는 업무나 무대에 서는 일에서 에너지가 폭발해요. 즉흥적인 대응력이 필요한 환경에서 특히 강한 모습을 보여줘요.",
+      relationship: "주변 사람을 즐겁게 만들어주고, 관계 속에서 큰 활력을 얻는 편이에요. 진심 어린 리액션으로 사람들을 편안하게 해줘요.",
+      strength: "분위기를 살리는 친화력과 표현력이 강점이에요. 사람들 앞에 서는 자리에서 최고의 매력을 발휘해요.",
+      stress: "무시당하거나 혼자 남겨지는 상황을 힘들어해요. 좋아하는 사람들과 시간을 보내는 게 최고의 회복법이에요.",
+      caution: "즉흥적인 결정 전에 한 번 더 생각해보는 습관을 들이면 좋아요." }
+  };
+
+  const COMPAT_AXES = [["E", "I"], ["S", "N"], ["T", "F"], ["J", "P"]];
+  const COMPAT_AXIS_NAME = [["외향", "내향"], ["감각", "직관"], ["사고", "감정"], ["판단", "인식"]];
+  const COMPAT_COMPLEMENT_GOOD = [true, false, false, true];
+
+  function calcCompatRanking(scores) {
+    const pref = COMPAT_AXES.map(([p, n]) => (scores[p] - scores[n]) / 3);
+    const list = Object.keys(RESULTS).map(t => {
+      let score = 0;
+      for (let i = 0; i < 4; i++) {
+        const target = (t[i] === COMPAT_AXES[i][0]) ? 1 : -1;
+        const align = pref[i] * target;
+        score += COMPAT_COMPLEMENT_GOOD[i] ? -align : align;
+      }
+      return { type: t, score };
+    });
+    list.sort((a, b) => b.score - a.score);
+    return list;
+  }
+
+  function calcCompatDetail(scores, myType) {
+    const ranked = calcCompatRanking(scores);
+    const best = ranked[0];
+    const bestPct = Math.round(60 + Math.max(0, Math.min(4, best.score)) / 4 * 39);
+
+    const sameAxes = [];
+    const diffAxes = [];
+    for (let i = 0; i < 4; i++) {
+      const mine = myType[i];
+      const other = best.type[i];
+      const label = other === COMPAT_AXES[i][0] ? COMPAT_AXIS_NAME[i][0] : COMPAT_AXIS_NAME[i][1];
+      if (mine === other) sameAxes.push(label); else diffAxes.push(label);
+    }
+    let reason = "";
+    if (sameAxes.length) reason += `${sameAxes.join("·")} 성향이 비슷해서 대화가 잘 통하고, `;
+    if (diffAxes.length) reason += `${diffAxes.join("·")} 부분은 서로 달라서 부족한 점을 자연스럽게 채워줄 수 있어요.`;
+    else reason += "성향이 두루 비슷해서 편안하게 어울릴 수 있어요.";
+
+    return { ranked, best, bestPct, reason };
+  }
+
+  const RESPONSE_LABELS = ["전혀 아니다", "대체로 아니다", "반반이다", "대체로 그렇다", "매우 그렇다"];
+  const QUESTIONS = [
+  {
+    "icon": "iconRelationship",
+    "q": "여러 사람과 함께 시간을 보내면 에너지가 생긴다.",
+    "first": "E",
+    "second": "I"
+  },
+  {
+    "icon": "iconRelationship",
+    "q": "모임에서는 친한 한두 사람과 깊게 이야기하는 편이다.",
+    "first": "I",
+    "second": "E"
+  },
+  {
+    "icon": "iconRelationship",
+    "q": "처음 만난 사람에게 먼저 말을 거는 편이다.",
+    "first": "E",
+    "second": "I"
+  },
+  {
+    "icon": "iconPlanning",
+    "q": "이야기할 때 구체적인 사실과 경험을 먼저 떠올린다.",
+    "first": "S",
+    "second": "N"
+  },
+  {
+    "icon": "iconPlanning",
+    "q": "새로운 일을 배울 때 큰 그림과 응용 가능성부터 생각한다.",
+    "first": "N",
+    "second": "S"
+  },
+  {
+    "icon": "iconPlanning",
+    "q": "새로운 것보다 검증되고 실용적인 것을 선호한다.",
+    "first": "S",
+    "second": "N"
+  },
+  {
+    "icon": "iconEmotion",
+    "q": "중요한 결정에서는 감정보다 논리와 근거를 먼저 살핀다.",
+    "first": "T",
+    "second": "F"
+  },
+  {
+    "icon": "iconEmotion",
+    "q": "갈등이 생기면 해결책보다 상대의 감정을 먼저 살핀다.",
+    "first": "F",
+    "second": "T"
+  },
+  {
+    "icon": "iconEmotion",
+    "q": "노력을 알아주는 말보다 결과가 좋았다는 칭찬이 더 반갑다.",
+    "first": "T",
+    "second": "F"
+  },
+  {
+    "icon": "iconAlonetime",
+    "q": "여행 전에 세부 일정을 정해두면 마음이 편하다.",
+    "first": "J",
+    "second": "P"
+  },
+  {
+    "icon": "iconAlonetime",
+    "q": "마감 직전에 오히려 집중이 잘 되는 편이다.",
+    "first": "P",
+    "second": "J"
+  },
+  {
+    "icon": "iconAlonetime",
+    "q": "방이나 책상이 정돈되어 있어야 편하다.",
+    "first": "J",
+    "second": "P"
+  },
+  {
+    "icon": "iconAlonetime",
+    "q": "다른 사람의 표정 변화를 금방 알아차린다.",
+    "sensitivity": true
+  },
+  {
+    "icon": "iconAlonetime",
+    "q": "작은 소음이나 냄새에도 쉽게 신경이 쓰인다.",
+    "sensitivity": true
+  },
+  {
+    "icon": "iconAlonetime",
+    "q": "누군가의 비판이 오래 마음에 남는 편이다.",
+    "sensitivity": true
+  },
+  {
+    "icon": "iconAlonetime",
+    "q": "하루 일과 후 혼자 회복하는 시간이 필요하다.",
+    "sensitivity": true
+  }
+];
+  let state = { step: 0, answers: [], nickname: "" };
+  const root = document.getElementById("nabti-root");
+  const shareLinkUrl = new URL("./index.html", location.href).href;
+  const playzipUrl = new URL("../../index.html#home", location.href).href;
+
+  // Native-only, device-local recovery; never replaces an explicit shared result link.
+  const PROGRESS_KEY = "playzip.nabti.progress.v1";
+  // Home/menu re-entry shows the beginning after a finished reading.
+  // Keep unfinished work for unexpected app termination; never erase saved History.
+  if (window.AndroidPlayzip && new URLSearchParams(location.search).get("playzip_new") === "1") {
+    try {
+      const last = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "null");
+      if (last && last.stage === "result") localStorage.removeItem(PROGRESS_KEY);
+    } catch (_) { localStorage.removeItem(PROGRESS_KEY); }
+    const params = new URLSearchParams(location.search);
+    params.delete("playzip_new");
+    history.replaceState(null, "", location.pathname + (params.toString() ? "?" + params : "") + location.hash);
+  }
+  let screen = "start";
+  function remember(stage, extra) {
+    screen = stage;
+    if(stage!=="result")window.__PLAYZIP_RESULT_URL__=null;
+    if (!window.AndroidPlayzip || location.search || location.hash) return;
+    try { localStorage.setItem(PROGRESS_KEY, JSON.stringify({v:1,at:Date.now(),stage,state,...extra})); } catch (_) {}
+  }
+  function readProgress() {
+    if (!window.AndroidPlayzip || location.search || location.hash) return null;
+    try { const p=JSON.parse(localStorage.getItem(PROGRESS_KEY));
+      if(!p || p.v!==1 || !Number.isFinite(p.at) || Date.now()-p.at<0 || Date.now()-p.at>86400000) return null;
+      if(!p.state || typeof p.state.nickname!=="string" || p.state.nickname.length>200 || /[<>]/.test(p.state.nickname))return null;
+      return p;
+    } catch (_) {return null;}
+  }
+  function resetState() {
+    state = { step: 0, answers: [], nickname: "" };
+  }
+
+  // 닉네임 등 사용자 입력값을 화면에 그대로 꽂아 넣기 전에 이스케이프 처리 (XSS 방지)
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  // 결과(scores, 자극 반응 스타일, 닉네임)를 URL 파라미터에 담아 "결과가 곧바로 보이는" 공유 링크를 만든다.
+  // E/S/T/J 는 0~3 중 하나이며, I/N/F/P 는 (3 - 값)으로 복원 가능해서 4개 숫자만 저장하면 충분하다.
+  function buildResultUrl(scores, sensitivity, nickname) {
+    const params = new URLSearchParams();
+    params.set("v", "2");
+    params.set("e", scores.E);
+    params.set("s", scores.S);
+    params.set("t", scores.T);
+    params.set("j", scores.J);
+    params.set("sen", sensitivity);
+    params.set("n", nickname);
+    return shareLinkUrl + "?" + params.toString();
+  }
+
+  // 페이지 로드시 URL에 공유 파라미터가 있으면 그 값으로 결과 데이터를 복원한다. 없으면 null.
+  function parseSharedResult() {
+    const params = new URLSearchParams(window.location.search);
+    if (!["e", "s", "t", "j", "sen"].every(k => params.has(k))) return null;
+
+    const e = Number(params.get("e"));
+    const s = Number(params.get("s"));
+    const t = Number(params.get("t"));
+    const j = Number(params.get("j"));
+    const sen = Number(params.get("sen"));
+
+    if (!["e","s","t","j","sen"].every(k=>/^\d+(?:\.\d+)?$/.test(params.get(k)))) return null;
+    if ([e, s, t, j].some(v => isNaN(v) || v < 0 || v > 3)) return null;
+    if (isNaN(sen) || sen < 4 || sen > 16) return null;
+
+    if (params.has("v") && params.get("v") !== "2") return null;
+    if ([e,s,t,j].some(v => (params.get("v") === "2" ? !Number.isInteger(v * 4) : !Number.isInteger(v)))) return null;
+    if (params.get("v") !== "2" && !Number.isInteger(sen)) return null;
+    const nickname = escapeHtml((params.get("n") || "친구").slice(0, 10));
+
+    return {
+      scores: { E: e, I: 3 - e, S: s, N: 3 - s, T: t, F: 3 - t, J: j, P: 3 - j },
+      sensitivity: sen,
+      nickname: nickname
+    };
+  }
+
+  // 캐릭터 이미지가 webp라서 아이폰 카카오톡에서 미리보기 이미지가 안 뜨는 문제 방지용:
+  // App sharing uses the native SDK; this public image is only a share preview.
+  function toKakaoSafeImage(url) {
+    const source=new URL(url,window.location.href).pathname;
+    const animal=source.match(/\/characters\/nabti-a\/(themes\/halloween\/)?([A-Z]{4})\.webp$/);
+    if(animal)return 'https://jeiskwon.github.io/playzip/share-art/nabti/'+(animal[1]?'halloween/':'base/')+animal[2]+'.png';
+    if(/^\/playzip\/share-art\/tarot\/[a-f0-9]{16}\.jpg$/.test(source))return 'https://jeiskwon.github.io'+source;
+    const media=source.match(/\/media\/([a-f0-9]{16})\.webp$/);
+    if(media)return 'https://jeiskwon.github.io/playzip/share-art/tarot/'+media[1]+'.jpg';
+    return 'https://jeiskwon.github.io/playzip/share-preview-v3.png';
+  }
+
+  function shareToKakao({ title, description, imageUrl, link }) {
+    // 카드 본문과 하단 버튼을 모두 "친구 결과보기" 링크로 통일한다.
+    // (버튼만 따로 시작화면으로 보내면, 사람들이 카드 대신 버튼을 눌러서
+    //  결과 화면을 아예 못 보고 바로 새 테스트 화면으로 가버리는 문제가 있었음)
+    const targetLink = link || shareLinkUrl;
+    if (!window.Kakao || !Kakao.isInitialized()) {
+      const fallbackText = `${title}\n${description}\n\n결과 보고 너도 테스트 해봐 👉 ${targetLink}`;
+      navigator.clipboard?.writeText(fallbackText);
+      alert("카카오 공유 기능을 불러오지 못했어요.\n대신 문구가 복사됐으니 카카오톡에 붙여넣어주세요.");
+      return;
+    }
+    try {
+      Kakao.Share.sendDefault({
+        objectType: "feed",
+        content: {
+          title: title,
+          description: description,
+          imageUrl: toKakaoSafeImage(imageUrl),
+          link: { mobileWebUrl: targetLink, webUrl: targetLink }
+        },
+        buttons: [
+          {
+            title: "결과 보러가기",
+            link: { mobileWebUrl: targetLink, webUrl: targetLink }
+          }
+        ]
+      });
+    } catch (err) {
+      const fallbackText = `${title}\n${description}\n\n결과 보고 너도 테스트 해봐 👉 ${targetLink}`;
+      navigator.clipboard?.writeText(fallbackText);
+      alert("카카오 공유창을 여는 데 실패했어요.\n대신 문구가 복사됐으니 카카오톡에 붙여넣어주세요.");
+    }
+  }
+
+  function renderStart() {
+    remember("start");
+    window.playzipShareCurrentResult = null;
+    root.innerHTML = `
+      <div class="nabti-card nabti-start-card">
+        
+        ${themeBadge()}
+        <div class="nabti-title">나를 닮은 동물은<br/>누구일까?</div>
+        <div class="nabti-sub">16가지 동물 캐릭터로 나의 성향을 알아보세요.</div>
+        <div class="nabti-start-visual" aria-label="나BTI 동물 캐릭터">
+          <div class="nabti-bubble a"><img data-character="INTJ" src="${characterUrl("INTJ")}" alt="동물 캐릭터" /></div>
+          <div class="nabti-bubble b"><img data-character="ENFP" src="${characterUrl("ENFP")}" alt="동물 캐릭터" /></div>
+          <div class="nabti-bubble c"><img data-character="ISFJ" src="${characterUrl("ISFJ")}" alt="동물 캐릭터" /></div>
+          <div class="nabti-bubble d"><img data-character="ESTP" src="${characterUrl("ESTP")}" alt="동물 캐릭터" /></div>
+        </div>
+        <div class="nabti-start-features"><span>16유형</span><span>자극 반응 스타일</span><span>궁합</span></div>
+        <input type="text" id="nabti-nickname-input" class="nabti-nickname-input" placeholder="닉네임을 입력해주세요" maxlength="10" />
+        <button class="nabti-btn" id="nabti-start-btn">내 동물 유형 찾기</button>
+        <div class="nabti-start-foot">16문항에 평소 모습과 얼마나 가까운지 5단계로 답해주세요. 재미로 살펴보는 자기이해 테스트입니다.</div>
+      </div>
+    `;
+    refreshCharacterArtwork();
+    const nicknameInput = document.getElementById("nabti-nickname-input");
+    document.getElementById("nabti-start-btn").onclick = () => {
+      const nickname = nicknameInput.value.trim();
+      if (!nickname) {
+        nicknameInput.focus();
+        nicknameInput.style.borderColor = "#ff8fab";
+        return;
+      }
+      const savedNickname = escapeHtml(nickname);
+      resetState();
+      state.nickname = savedNickname;
+      renderQuestion();
+    };
+    nicknameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") document.getElementById("nabti-start-btn").click();
+    });
+  }
+
+  function renderProgress() {
+    const total = QUESTIONS.length;
+    let paws = "";
+    for (let i = 0; i < total; i++) {
+      paws += `<img class="nabti-paw ${i < state.step ? 'filled' : i === state.step ? 'current' : ''}" src="${IMG.pawPrint}" alt="" />`;
+    }
+    return `<div class="nabti-progress-wrap" role="progressbar" aria-label="질문 진행" aria-valuemin="1" aria-valuemax="${total}" aria-valuenow="${state.step + 1}">${paws}<span class="nabti-qcount">${state.step + 1}/${total}</span></div>`;
+  }
+
+  function renderQuestion() {
+    remember("question");
+    window.playzipShareCurrentResult = null;
+    const q = QUESTIONS[state.step];
+    const optionsHtml = RESPONSE_LABELS.map((opt, idx) => `
+      <button class="nabti-option" aria-pressed="${state.answers[state.step] === idx}" data-idx="${idx}">${opt}</button>
+    `).join("");
+
+    root.innerHTML = `
+      <div class="nabti-card">
+        ${renderProgress()}
+        <img class="nabti-qicon" src="${IMG[q.icon]}" alt="" />
+        <div class="nabti-question">${q.q}</div>
+        <p class="nabti-response-hint">평소의 나와 얼마나 가까운가요?</p><div class="nabti-options">${optionsHtml}</div>
+        ${state.step > 0 ? '<button class="nabti-prev-link" id="nabti-prev-btn">← 이전 질문으로</button>' : ''}
+      </div>
+    `;
+
+    root.querySelectorAll(".nabti-option").forEach(btn => {
+      btn.onclick = () => {
+        const idx = parseInt(btn.getAttribute("data-idx"));
+        state.answers[state.step] = idx;
+        state.step++;
+        if (state.step < QUESTIONS.length) {
+          renderQuestion();
+        } else {
+          renderLoading();
+        }
+      };
+    });
+
+    const prevBtn = document.getElementById("nabti-prev-btn");
+    if (prevBtn) {
+      prevBtn.onclick = () => {
+        state.step--;
+        renderQuestion();
+      };
+    }
+  }
+
+  function renderLoading() {
+    remember("loading");
+    root.innerHTML = `
+      <div class="nabti-card nabti-loading">
+        <img src="${IMG.loadingChick}" alt="결과를 찾는 부엉이 안내자" />
+        <p>결과를 계산하고 있어요...</p>
+      </div>
+    `;
+    setTimeout(() => {if(screen === "loading")renderResult();}, 1200);
+  }
+
+  function calcScores() {
+    const scores = { E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0 };
+    let sensitivity = 0;
+    QUESTIONS.forEach((q, i) => {
+      const idx = state.answers[i];
+      if (idx === undefined) return;
+      if (!Number.isInteger(idx) || idx < 0 || idx > 4) throw new Error("Invalid answer");
+      if (q.sensitivity) {
+        sensitivity += 1 + idx * 0.75;
+      } else {
+        scores[q.first] += idx / 4;
+        scores[q.second] += (4 - idx) / 4;
+      }
+    });
+    return { scores, sensitivity };
+  }
+
+  function calcType(scores) {
+    const s = scores;
+    const type =
+      (s.E >= s.I ? "E" : "I") +
+      (s.S >= s.N ? "S" : "N") +
+      (s.T >= s.F ? "T" : "F") +
+      (s.J >= s.P ? "J" : "P");
+    return type;
+  }
+
+  function calcAxisPercents(scores) {
+    return [
+      { leftLetter: "E", leftLabel: "외향", leftPct: Math.round(scores.E / 3 * 100), rightLetter: "I", rightLabel: "내향", rightPct: Math.round(scores.I / 3 * 100) },
+      { leftLetter: "S", leftLabel: "감각", leftPct: Math.round(scores.S / 3 * 100), rightLetter: "N", rightLabel: "직관", rightPct: Math.round(scores.N / 3 * 100) },
+      { leftLetter: "T", leftLabel: "사고", leftPct: Math.round(scores.T / 3 * 100), rightLetter: "F", rightLabel: "감정", rightPct: Math.round(scores.F / 3 * 100) },
+      { leftLetter: "J", leftLabel: "판단", leftPct: Math.round(scores.J / 3 * 100), rightLetter: "P", rightLabel: "인식", rightPct: Math.round(scores.P / 3 * 100) }
+    ];
+  }
+
+  function calcClosestTypes(scores) {
+    const axes = [["E", "I"], ["S", "N"], ["T", "F"], ["J", "P"]];
+    const pref = axes.map(([p, n]) => (scores[p] - scores[n]) / 3);
+    const all = Object.keys(RESULTS).map(t => {
+      let d = 0;
+      for (let i = 0; i < 4; i++) {
+        const target = (t[i] === axes[i][0]) ? 1 : -1;
+        d += Math.abs(pref[i] - target);
+      }
+      return { type: t, distance: d };
+    });
+    all.sort((a, b) => a.distance - b.distance);
+    return all;
+  }
+
+  function renderResult(sharedData) {
+    if(!sharedData)remember("result"); else screen="shared";
+    // sharedData가 있으면(=공유 링크로 들어온 방문자) 그 값을 그대로 쓰고,
+    // 없으면(=방금 테스트를 마친 본인) 지금까지의 답변으로 새로 계산한다.
+    const isShared = !!sharedData;
+    const { scores, sensitivity } = sharedData || calcScores();
+    window.__PLAYZIP_RESULT_URL__ = buildResultUrl(scores, sensitivity, state.nickname);
+    const type = calcType(scores);
+    const result = RESULTS[type];
+    const charUrl = window.PlayzipCharacters.resolve(type, IMG.characters[type]);
+    const compat = calcCompatDetail(scores, type);
+    const mixedAxes = calcAxisPercents(scores).filter(a => a.leftPct >= 40 && a.leftPct <= 60);
+    const mixedNote = mixedAxes.length ? mixedAxes.map(a=>a.leftLabel+"·"+a.rightLabel).join(", ")+"은 양쪽 성향이 가까워요. 아래 동물은 대표 후보이며 상황에 따라 다른 후보도 어울릴 수 있어요." : "이번 답변에서 상대적으로 가까운 동물이에요. 상황과 시기에 따라 달라질 수 있어요.";
+    const compatType = compat.best.type;
+    const compatResult = RESULTS[compatType];
+    const sensitivityMax = 16, sensitivityMin = 4;
+    const pct = Math.round(((sensitivity - sensitivityMin) / (sensitivityMax - sensitivityMin)) * 100);
+    const fillRight = 100 - pct;
+
+    let sensitivityDesc = "이번 답변에서는 자극을 비교적 편하게 넘기는 쪽에 가까워요.";
+    if (pct >= 75) sensitivityDesc = "이번 답변에서는 작은 자극도 섬세하게 느끼는 쪽에 가까워요. 회복 시간을 챙겨보세요.";
+    else if (pct >= 50) sensitivityDesc = "이번 답변에서는 주변 자극을 잘 알아차리는 쪽에 가까워요.";
+    else if (pct >= 25) sensitivityDesc = "이번 답변에서는 상황에 따라 반응이 달라지는 쪽에 가까워요.";
+
+    const axisRows = calcAxisPercents(scores).map(a => `
+      <div class="nabti-trait-row">
+        <div class="nabti-trait-label"><span>${a.leftLetter} ${a.leftLabel} ${a.leftPct}%</span><span>${a.rightPct}% ${a.rightLabel} ${a.rightLetter}</span></div>
+        <div class="nabti-trait-bar"><div class="nabti-trait-fill" style="width:${a.leftPct}%"></div></div>
+      </div>
+    `).join("");
+
+    const traitListHtml = `<ul class="nabti-detail-list">${result.keyTraits.map(t => `<li>${t}</li>`).join("")}</ul>`;
+
+    const closestRanked = calcClosestTypes(scores);
+    const top4 = closestRanked.slice(0, 4);
+    const rankRowsHtml = top4.map((r, i) => `
+      <div class="nabti-rank-row ${r.type === type ? 'me' : ''}">
+        <span class="rank-num">${i + 1}위</span>
+        <span>[${r.type}] ${RESULTS[r.type].animal}</span>
+      </div>
+    `).join("");
+
+    const compatTop3 = compat.ranked.slice(0, 3);
+    const compatChallenge = compat.ranked[compat.ranked.length - 1];
+    const compatChemiHtml = compatTop3.map((r, i) => `
+      <div class="nabti-othertype-chip"><b>${i + 1}위 · ${r.type}</b><br/>${RESULTS[r.type].animal}</div>
+    `).join("");
+
+    root.innerHTML = `
+      <div class="nabti-card" style="background: linear-gradient(160deg, ${result.color[1]}22, #ffffff);">
+        ${themeBadge()}
+        <div class="nabti-result-frame">
+          <img class="character" data-character="${type}" src="${charUrl}" alt="${type}" />
+          
+          
+        </div>
+        <div class="nabti-type-code">${mixedAxes.length ? "대표 후보 · " : ""}${type}</div>
+        <div class="nabti-type-name">${result.animal}</div>
+        <div class="nabti-blurb">${mixedAxes.length >= 3 ? "중간 응답이 많아 한 유형으로 단정하기 어려워요. 가까운 후보들을 함께 살펴보세요." : result.blurb}</div>
+        <ul class="nabti-key-three">${(mixedAxes.length >= 3 ? ["상황에 따라 양쪽 성향을 오갈 수 있어요", "지금 편한 방식과 평소의 방식을 비교해보세요", "유형보다 내 응답의 흐름을 먼저 살펴보세요"] : result.keyTraits.slice(0,3)).map(t=>`<li>${t}</li>`).join("")}</ul>
+        <p class="nabti-response-note">${mixedNote}</p>
+
+        <div class="nabti-sensitivity">
+          <div class="nabti-sensitivity-title">
+            <img src="${IMG.hedgehogGauge}" alt="" style="width:36px;height:36px;object-fit:contain;" />
+            자극 반응 스타일 · ${pct < 25 ? "편하게 넘기는 편" : pct < 50 ? "상황에 따라 달라요" : pct < 75 ? "잘 알아차리는 편" : "섬세하게 느끼는 편"}
+          </div>
+          <div class="nabti-gauge-wrap">
+            <img class="gauge-bg" src="${IMG.gaugeBar}" alt="" />
+            <div class="nabti-gauge-fill" style="right:0; width:${fillRight}%;"></div>
+          </div>
+          <div class="nabti-sensitivity-desc">${sensitivityDesc}</div>
+        </div>
+
+        <div class="nabti-nickname-tag">${state.nickname}님은 <b>${result.animal}</b>상이시네요!</div>
+
+        <div class="nabti-compat">
+          ${mixedAxes.length >= 3 ? "중간 응답이 많아 특정 궁합을 추천하기 어려워요." : `함께 살펴볼 동물 · <b>[${compatType}] ${compatResult.animal}</b>`}<br/>
+          친구 결과랑 비교해보고 싶다면 아래 공유 버튼을 눌러 결과를 보내보세요 🐾
+        </div>
+
+        <button class="nabti-toggle-btn" id="nabti-toggle-btn">자세히 보기 ▾</button>
+
+        <div class="nabti-detail-wrap nabti-collapsed" id="nabti-detail-wrap">
+          <div class="nabti-detail-section">
+            <div class="nabti-detail-title">응답으로 보는 성향</div><p class="nabti-response-note">비율은 문항 응답을 정리한 값입니다. 인구 평균, 검사 정확도 또는 궁합 확률을 뜻하지 않습니다. 재미로 살펴보는 자기이해 테스트이며 공식 성격검사·심리진단이 아닙니다.</p>
+            ${axisRows}
+          </div>
+
+          <div class="nabti-detail-section">
+            <div class="nabti-detail-title"><img class="nabti-detail-art" src="${IMG.pawPrint}" alt="" /> ${state.nickname}님의 특징</div>
+            ${traitListHtml}
+          </div>
+
+          <div class="nabti-detail-section">
+            <div class="nabti-detail-title"><img src="${IMG.iconPlanning}" alt="" class="nabti-detail-art" /> ${state.nickname}님의 학습과 일 스타일</div>
+            <div class="nabti-detail-text">${result.work}</div>
+          </div>
+
+          <div class="nabti-detail-section">
+            <div class="nabti-detail-title"><img src="${IMG.iconRelationship}" alt="" class="nabti-detail-art" /> ${state.nickname}님의 관계 스타일</div>
+            <div class="nabti-detail-text">${result.relationship}</div>
+          </div>
+
+          <div class="nabti-detail-section">
+            <div class="nabti-detail-title"><img class="nabti-detail-art" src="${IMG.iconPlanning}" alt="" /> ${state.nickname}님의 강점 활용법</div>
+            <div class="nabti-detail-text">${result.strength}</div>
+          </div>
+
+          <div class="nabti-detail-section">
+            <div class="nabti-detail-title"><img src="${IMG.iconEmotion}" alt="" class="nabti-detail-art" /> 스트레스를 받을 때</div>
+            <div class="nabti-detail-text">${result.stress}</div>
+          </div>
+
+          <div class="nabti-detail-section">
+            <div class="nabti-detail-title"><img class="nabti-detail-art" src="${IMG.hedgehogGauge}" alt="" /> 주의할 점</div>
+            <div class="nabti-detail-text">${result.caution}</div>
+          </div>
+
+          <hr class="nabti-section-divider" />
+
+          <div class="nabti-detail-section">
+            <div class="nabti-rank-title">💞 ${state.nickname}님의 궁합 이야기</div>
+            <div class="nabti-detail-text">${compat.reason}</div>
+            <div class="nabti-compat-sub-title">케미 좋은 유형 TOP 3</div>
+            <div class="nabti-othertypes-grid">${compatChemiHtml}</div>
+            <div class="nabti-detail-text" style="margin-top:10px;">
+              반대로 <b>[${compatChallenge.type}] ${RESULTS[compatChallenge.type].animal}</b>쪽과는 다른 점이 좀 더 많아서, 서로 이해하려는 노력이 있다면 오히려 배울 게 많은 조합이 될 수 있어요.
+            </div>
+          </div>
+
+          <div class="nabti-detail-section">
+            <div class="nabti-rank-title">🏆 ${state.nickname}님의 결과와 가까운 유형 순위</div>
+            ${rankRowsHtml}
+          </div>
+        </div>
+
+        ${isShared ? `
+        <div class="nabti-shared-tag">👀 ${state.nickname}님이 공유한 결과예요</div>
+        <button class="nabti-btn nabti-btn-full" id="nabti-retry-btn">
+          <img src="${IMG.playButton}" alt="" /> 나도 테스트 해보기
+        </button>
+        ` : `
+        <button class="nabti-btn nabti-btn-full" id="nabti-retry-btn">
+          <img src="${IMG.refreshIcon}" alt="" /> 다시하기
+        </button>
+        <div class="nabti-btn-row">
+          <button class="nabti-btn-outline" id="nabti-share-btn">
+            <img src="${IMG.shareIcon}" alt="" /> 결과 공유하기
+          </button>
+        </div>
+        `}
+        <a href="${window.AndroidPlayzip ? playzipUrl : window.playzipAppLink(playzipUrl)}" style="display:block;margin-top:12px;text-decoration:none;background:linear-gradient(135deg,#8164d8,#ed75a8);color:#fff;padding:13px 14px;border-radius:14px;font-size:14px;font-weight:800;text-align:center;">운명코드에서 다른 콘텐츠 보기 →</a>
+      </div>
+    `;
+
+    const toggleBtn = document.getElementById("nabti-toggle-btn");
+    const detailWrap = document.getElementById("nabti-detail-wrap");
+    toggleBtn.onclick = () => {
+      const isCollapsed = detailWrap.classList.toggle("nabti-collapsed");
+      toggleBtn.textContent = isCollapsed ? "자세히 보기 ▾" : "간단히 보기 ▴";
+    };
+
+    refreshCharacterArtwork();
+    document.getElementById("nabti-retry-btn").onclick = () => {
+      if(isShared && !window.AndroidPlayzip){location.href=window.playzipAppLink(shareLinkUrl);return;}
+      resetState();
+      // 공유 링크의 ?e=..&s=..&n=.. 같은 파라미터를 지워서, 새로고침해도 다시 남의 결과가 뜨지 않게 한다.
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, "", window.location.pathname);
+      }
+      renderStart();
+    };
+
+    const shareBtn = document.getElementById("nabti-share-btn");
+    const sendCurrentResult = () => {
+        const resultUrl = buildResultUrl(scores, sensitivity, state.nickname);
+        shareToKakao({
+          title: `${state.nickname}님은 ${result.animal}상이시네요! (${type})`,
+          description: `${result.blurb} 이번 답변에 가까운 동물 후보를 함께 살펴보세요.`,
+          imageUrl: characterUrl(type),
+          link: resultUrl
+        });
+    };
+    window.playzipShareCurrentResult = sendCurrentResult;
+    if (shareBtn) shareBtn.onclick = sendCurrentResult;
+  }
+
+  const sharedResult = parseSharedResult();
+  if (sharedResult) {
+    state.nickname = sharedResult.nickname;
+    renderResult(sharedResult);
+  } else {
+    const p=readProgress(),st=p&&p.state;
+    const valid=st&&Number.isInteger(st.step)&&st.step>=0&&st.step<=QUESTIONS.length&&Array.isArray(st.answers)&&st.answers.length<=QUESTIONS.length&&st.answers.every(x=>Number.isInteger(x)&&x>=0&&x<RESPONSE_LABELS.length)&&st.answers.slice(0,st.step).length===st.step;
+    if(valid && ["question","loading","result"].includes(p.stage)){
+      state=st;
+      if(st.step===QUESTIONS.length)renderResult();else renderQuestion();
+    }else renderStart();
+  }
+  window.playzipGoBack=()=>{
+    if(screen==="shared"){location.replace(location.pathname);return true;}
+    if(screen==="question" && state.step>0){state.step--;renderQuestion();return true;}
+    if(screen==="loading"){state.step=QUESTIONS.length-1;renderQuestion();return true;}
+    if(screen!=="start"){resetState();renderStart();return true;}
+    return false;
+  };
+  refreshCharacterArtwork();
+})();
+</script>
+
+
+</body>
+</html>
+

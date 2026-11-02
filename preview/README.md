@@ -1,0 +1,1 @@
+# 운명코드 웹 미리보기\n\nAndroid playzip-app 0.99.11 사주/타로/나BTI HTML 및 JS 원본을 별도 preview 경로로 복사. 공개 저장소의 기존 이미지 자산을 재사용하며, 원본에만 있는 일부 이미지에는 대체 이미지가 표시됩니다.\n\n공개 페이지: https://jeiskwon.github.io/playzip/preview/\n\n안드로이드 전용 카카오 공유는 Web Share 또는 클립보드 공유로 대체합니다.\n
